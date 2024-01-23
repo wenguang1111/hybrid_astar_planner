@@ -27,11 +27,16 @@ include_directories(
 )
 
 add_library(HybridAStar
-        SHARED LICENSE include/utils.h
+        SHARED LICENSE 
+        include/utils.h
         src/HybridAStar.cpp include/HybridAStar.h
         src/HybridAStarWrapper.cpp src/Dubins.cpp
         include/Dubins.h src/MapInfo.cpp
         include/MapInfo.h src/Car.cpp include/Car.h
-        src/Obstacle.cpp include/Obstacle.h include/py_cpp_struct.h)
+        src/Obstacle.cpp include/Obstacle.h include/py_cpp_struct.h
+        tool/recorder.h tool/recorder.cpp
+        )
+
+# add_executable(main src/main.cpp)
 
 target_link_libraries(HybridAStar Qt5::Widgets Qt5::Gui)

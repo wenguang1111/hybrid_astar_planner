@@ -8,18 +8,18 @@
 //      end_: desired ending pose of car x, y, yaw
 //      obstacles: list of obstacles
 MapInfo::MapInfo(HybridAStarInitialConditions *hastar_ic_,
-    HybridAStarHyperparameters *hastar_hp_) {
+                 HybridAStarHyperparameters *hastar_hp_) {
     hastar_ic = hastar_ic_;
     hastar_hp = hastar_hp_;
     setStateSpace();
     setObstacles();
-    vector<double> car_dimensions ({hastar_hp->car_length, hastar_hp->car_width});
-    Pose car_pose (start);
+    vector<double> car_dimensions(
+        {hastar_hp->car_length, hastar_hp->car_width});
+    Pose car_pose(start);
     car = Car(car_dimensions, car_pose);
 }
 
-MapInfo::~MapInfo()
-{
+MapInfo::~MapInfo() {
     for (auto obstacle : obstacles) {
         delete obstacle;
     }
@@ -31,7 +31,8 @@ MapInfo::~MapInfo()
 // State space calculated as minimum bounding rectangle with buffer
 // origin is lower left corner, bounds is width, height
 void MapInfo::setStateSpace() {
-    start.assign({hastar_ic->x_start, hastar_ic->y_start, hastar_ic->yaw_start});
+    start.assign(
+        {hastar_ic->x_start, hastar_ic->y_start, hastar_ic->yaw_start});
     end.assign({hastar_ic->x_end, hastar_ic->y_end, hastar_ic->yaw_end});
     origin.push_back(min(start[0], end[0]) - hastar_hp->lane_width); // x
     origin.push_back(min(start[1], end[1]) - hastar_hp->lane_width); // y
@@ -47,10 +48,7 @@ void MapInfo::setObstacles() {
     vector<double> ury(hastar_ic->o_ury, hastar_ic->o_ury + hastar_ic->no);
 
     for (int i = 0; i < hastar_ic->no; i++) {
-        addObstacle(
-            Vector2f(llx[i], lly[i]),
-            Vector2f(urx[i], ury[i])
-        );
+        addObstacle(Vector2f(llx[i], lly[i]), Vector2f(urx[i], ury[i]));
     }
 }
 
@@ -65,14 +63,10 @@ void MapInfo::addObstacle(Vector2f first_point, Vector2f second_point) {
 //      p: pose vector consisting of global x, y, yaw
 // Returns:
 //      none
-void MapInfo::setCarPose(Pose p) {
-    car.setPose(p);
-}
+void MapInfo::setCarPose(Pose p) { car.setPose(p); }
 
 // Return the outline of the car as a vector of x, y points
-vector<Point> MapInfo::getCarOutline() {
-    return car.getOutline();
-}
+vector<Point> MapInfo::getCarOutline() { return car.getOutline(); }
 
 // Determine whether the car outline intersects an obstacle
 // Arguments:
@@ -84,13 +78,14 @@ bool MapInfo::isCollision(vector<Point> car_outline) {
     for (size_t i = 0; i < car_outline.size(); i++) {
         p1.x() = car_outline[i][0];
         p1.y() = car_outline[i][1];
-        p2.x() = car_outline[(i+1) % car_outline.size()][0];
-        p2.y() = car_outline[(i+1) % car_outline.size()][1];
+        p2.x() = car_outline[(i + 1) % car_outline.size()][0];
+        p2.y() = car_outline[(i + 1) % car_outline.size()][1];
         if (isOutOfBounds(p1)) {
             return true; // p2 will be checked in loop
         }
-        for (auto obstacle: obstacles) {
-            if (obstacle->isSegmentInObstacle(p1, p2)) return true;
+        for (auto obstacle : obstacles) {
+            if (obstacle->isSegmentInObstacle(p1, p2))
+                return true;
         }
     }
     return false;
@@ -98,13 +93,9 @@ bool MapInfo::isCollision(vector<Point> car_outline) {
 
 // Determine if point is outside the bounds
 bool MapInfo::isOutOfBounds(Vector2f p) {
-    return (p.x() < origin[0]) ||
-           (p.x() > origin[0] + bounds[0]) ||
-           (p.y() < origin[1]) ||
-           (p.y() > origin[1] + bounds[1]);
+    return (p.x() < origin[0]) || (p.x() > origin[0] + bounds[0]) ||
+           (p.y() < origin[1]) || (p.y() > origin[1] + bounds[1]);
 }
 
 // Get the map area
-double MapInfo::getMapArea() {
-    return bounds[0] * bounds[1];
-}
+double MapInfo::getMapArea() { return bounds[0] * bounds[1]; }

@@ -7,11 +7,11 @@
 using namespace std;
 
 typedef vector<double> Point; //* range analysis for position
-typedef vector<double> Pose; //* range analysis for position
+typedef vector<double> Pose; //* x,y,yaw; range analysis for x, y
 
 enum direction_t {left='l', straight='s', right='r'};
 
-inline Point calcTurnCenter(Point point, char dir, double radius) {
+inline Point calcTurnCenter(Point point, char dir, double radius) {//* radius
     double x, y, ang;
     Point turn_center;
 
