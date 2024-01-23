@@ -5,3 +5,5 @@
 ```cpp
 Recorder::getInstance()->saveData `<double>`("Dubins::calcRSL()::e_prime[1]",e_prime[1]);
 ```
+
+For the class initialization, i record data for input variable:
