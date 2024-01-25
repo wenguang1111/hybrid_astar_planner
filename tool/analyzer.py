@@ -21,9 +21,9 @@ for column, stats in column_stats.items():
     print("std_dev:", stats['std_dev'])
     print("\n")
 
-values = data['Car::getOutline()::head_l[i]']  # 获取列的数值
-plt.hist(values, bins=100, edgecolor='black')  # 绘制直方图，可以根据需要调整 bins 的数量
-plt.title(f"Histogram for {column}")
-plt.xlabel(column)
-plt.ylabel("Frequency")
-plt.show()
+# values = data['Car::getOutline()::head_l[i]']
+# plt.hist(values, bins=100, edgecolor='black')
+# plt.title(f"Histogram for {column}")
+# plt.xlabel(column)
+# plt.ylabel("Frequency")
+# plt.show()
