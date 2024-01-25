@@ -1,5 +1,5 @@
 #include "include/HybridAStar.h"
-
+#include "tool/recorder.h"
 #include <algorithm>
 #include <cmath>
 
