@@ -20,9 +20,10 @@ DubinsPath Dubins::getShortestPath() {
             }
         }
 
+#ifdef USE_RECORDER
         Recorder::getInstance()->saveData<double>(
             "Dubins::getShortestPath()::cost", cost);
-
+#endif
         if (cost < shortest_cost) {
             shortest_path = path;
             shortest_cost = cost;
@@ -46,12 +47,14 @@ vector<Pose> Dubins::generatePath(Pose s, DubinsPath path, double radius) {
     vector<Pose> ret;
 
     cur = s;
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Dubins::generatePath()::cur[0]",
                                               cur[0]);
     Recorder::getInstance()->saveData<double>("Dubins::generatePath()::cur[0]",
                                               cur[1]);
     Recorder::getInstance()->saveData<double>("Dubins::generatePath()::cur[0]",
                                               cur[2]);
+#endif
     yaw = s[2];
     for (auto p : path) {
         if (p.first == direction_t::straight) {
@@ -62,31 +65,36 @@ vector<Pose> Dubins::generatePath(Pose s, DubinsPath path, double radius) {
             }
             for (int i = 0; i < p.second; i += tick) {
                 r_x.push_back(cur[0] + cos(yaw) * i);
+                r_y.push_back(cur[1] + sin(yaw) * i);
+                r_yaw.push_back(yaw);
+#ifdef USE_RECORDER
                 Recorder::getInstance()->saveData<double>(
                     "Dubins::generatePath()::r_x[i]", cur[0] + cos(yaw) * i);
-                r_y.push_back(cur[1] + sin(yaw) * i);
                 Recorder::getInstance()->saveData<double>(
                     "Dubins::generatePath()::r_y[i]", cur[1] + sin(yaw) * i);
-                r_yaw.push_back(yaw);
                 Recorder::getInstance()->saveData<double>(
                     "Dubins::generatePath()::r_yaw[i]", yaw);
+#endif
             }
             r_x.push_back(cur[0] + cos(yaw) * p.second);
             r_y.push_back(cur[1] + sin(yaw) * p.second);
             r_yaw.push_back(yaw);
+#ifdef USE_RECORDER
             Recorder::getInstance()->saveData<double>(
                 "Dubins::generatePath()::r_x[i]", cur[0] + cos(yaw) * p.second);
             Recorder::getInstance()->saveData<double>(
                 "Dubins::generatePath()::r_y[i]", cur[1] + sin(yaw) * p.second);
             Recorder::getInstance()->saveData<double>(
                 "Dubins::generatePath()::r_yaw[i]", yaw);
+#endif
         } else {
             center = calcTurnCenter(cur, p.first, radius);
             ang_start = atan2(cur[1] - center[1], cur[0] - center[0]);
 
+#ifdef USE_RECORDER
             Recorder::getInstance()->saveData<double>(
                 "Dubins::generatePath()::ang_start", ang_start);
-
+#endif
             if (p.first == direction_t::left) {
                 ang_end = ang_start + p.second;
             } else {
@@ -97,65 +105,75 @@ vector<Pose> Dubins::generatePath(Pose s, DubinsPath path, double radius) {
             } else {
                 step = (-1 / radius);
             }
-
+#ifdef USE_RECORDER
             Recorder::getInstance()->saveData<double>(
                 "Dubins::generatePath()::ang_end", ang_end);
             Recorder::getInstance()->saveData<double>(
                 "Dubins::generatePath()::step", step);
-
+#endif
             ang = ang_start;
             for (int i = 0; i < (ang_end - ang_start) / step; i += 1) {
                 r_x.push_back(center[0] + cos(ang) * radius);
+                r_y.push_back(center[1] + sin(ang) * radius);
+                r_yaw.push_back(yaw);
+#ifdef USE_RECORDER
                 Recorder::getInstance()->saveData<double>(
                     "Dubins::generatePath()::r_x[i]",
                     center[0] + cos(ang) * radius);
-                r_y.push_back(center[1] + sin(ang) * radius);
                 Recorder::getInstance()->saveData<double>(
                     "Dubins::generatePath()::r_y[i]",
                     center[1] + sin(ang) * radius);
-                r_yaw.push_back(yaw);
                 Recorder::getInstance()->saveData<double>(
                     "Dubins::generatePath()::r_yaw[i]", yaw);
+#endif
                 yaw += step;
                 ang += step;
+#ifdef USE_RECORDER
+                Recorder::getInstance()->saveData<double>(
+                    "Dubins::generatePath()::yaw", yaw);
+                Recorder::getInstance()->saveData<double>(
+                    "Dubins::generatePath()::ang", ang);
+#endif
             }
 
-            Recorder::getInstance()->saveData<double>(
-                "Dubins::generatePath()::yaw", yaw);
-            Recorder::getInstance()->saveData<double>(
-                "Dubins::generatePath()::ang", ang);
-
             r_x.push_back(center[0] + cos(ang_end) * radius);
+            r_y.push_back(center[1] + sin(ang_end) * radius);
+#ifdef USE_RECORDER
             Recorder::getInstance()->saveData<double>(
                 "Dubins::generatePath()::r_x[i]",
                 center[0] + cos(ang_end) * radius);
 
-            r_y.push_back(center[1] + sin(ang_end) * radius);
             Recorder::getInstance()->saveData<double>(
                 "Dubins::generatePath()::r_y[i]",
                 center[1] + sin(ang_end) * radius);
+#endif
 
             if (p.first == direction_t::left) {
                 yaw = cur[2] + p.second;
             } else {
                 yaw = cur[2] - p.second;
             }
+
+            r_yaw.push_back(yaw);
+#ifdef USE_RECORDER
             Recorder::getInstance()->saveData<double>(
                 "Dubins::generatePath()::yaw", yaw);
-            r_yaw.push_back(yaw);
             Recorder::getInstance()->saveData<double>(
                 "Dubins::generatePath()::r_yaw[i]", yaw);
+#endif
         }
         cur.clear();
         cur.push_back(r_x.back());
         cur.push_back(r_y.back());
         cur.push_back(yaw);
+#ifdef USE_RECORDER
         Recorder::getInstance()->saveData<double>(
             "Dubins::generatePath()::cur[0]", r_x.back());
         Recorder::getInstance()->saveData<double>(
             "Dubins::generatePath()::cur[0]", r_y.back());
         Recorder::getInstance()->saveData<double>(
             "Dubins::generatePath()::cur[0]", yaw);
+#endif
     }
     for (size_t i = 0; i < r_x.size(); i++) {
         Pose p({r_x[i], r_y[i], r_yaw[i]});
@@ -182,7 +200,7 @@ Pose Dubins::calcEnd() {
     ley = (-sin(yaw) * ex + cos(yaw) * ey) / radius;
     leyaw = end[2] - start[2];
 
-    // record data
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Dubins::calcEnd()::ex", ex);
     Recorder::getInstance()->saveData<double>("Dubins::calcEnd()::ey", ey);
     Recorder::getInstance()->saveData<double>("Dubins::calcEnd()::yaw", yaw);
@@ -190,6 +208,7 @@ Pose Dubins::calcEnd() {
     Recorder::getInstance()->saveData<double>("Dubins::calcEnd()::ley", ley);
     Recorder::getInstance()->saveData<double>("Dubins::calcEnd()::leyaw",
                                               leyaw);
+#endif
 
     dend.push_back(lex);
     dend.push_back(ley);
@@ -213,13 +232,14 @@ DubinsPath Dubins::calcLSL(Pose e) {
     DubinsPoint second(direction_t::straight, u * radius);
     DubinsPoint third(direction_t::left, v);
 
-    // record data
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Dubins::calcLSL()::yaw", yaw);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSL()::x", x);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSL()::y", y);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSL()::u", u);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSL()::t", t);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSL()::v", v);
+#endif
 
     dp.push_back(first);
     dp.push_back(second);
@@ -235,11 +255,12 @@ DubinsPath Dubins::calcRSR(Pose e) {
     e_prime[1] = -e[1];
     e_prime[2] = mod2Pi(-e[2]);
 
-    // record data
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Dubins::calcRSR()::e_prime[1]",
                                               e_prime[1]);
     Recorder::getInstance()->saveData<double>("Dubins::calcRSR()::e_prime[2]",
                                               e_prime[2]);
+#endif
 
     path = calcLSL(e_prime);
     path[0].first = direction_t::right;
@@ -258,10 +279,11 @@ DubinsPath Dubins::calcLSR(Pose e) {
     y = e[1] - 1 - cos(yaw);
     u1_square = pow(x, 2) + pow(y, 2);
 
-    // record data
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::yaw", yaw);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::x", x);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::y", y);
+#endif
 
     if (u1_square <= 4.0) {
         return dp;
@@ -275,12 +297,14 @@ DubinsPath Dubins::calcLSR(Pose e) {
     second = make_pair(direction_t::straight, u * radius);
     third = make_pair(direction_t::right, v);
 
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::t1", t1);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::u", u);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::theta",
                                               theta);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::t", t);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::v", v);
+#endif
 
     dp.push_back(first);
     dp.push_back(second);
@@ -297,11 +321,12 @@ DubinsPath Dubins::calcRSL(Pose e) {
     e_prime[1] = -e[1];
     e_prime[2] = mod2Pi(-e[2]);
 
-    // record data
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Dubins::calcRSL()::e_prime[1]",
                                               e_prime[1]);
     Recorder::getInstance()->saveData<double>("Dubins::calcRSL()::e_prime[2]",
                                               e_prime[2]);
+#endif
 
     path = calcLSR(e_prime);
     if (path.empty()) {
@@ -323,10 +348,12 @@ DubinsPath Dubins::calcLRL(Pose e) {
     y = e[1] - 1 + cos(yaw);
     u1 = sqrt(pow(x, 2) + pow(y, 2));
 
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Dubins::calcLRL()::yaw", yaw);
     Recorder::getInstance()->saveData<double>("Dubins::calcLRL()::x", x);
     Recorder::getInstance()->saveData<double>("Dubins::calcLRL()::y", y);
     Recorder::getInstance()->saveData<double>("Dubins::calcLRL()::u1", u1);
+#endif
 
     if (u1 > 4.0) {
         return dp;
@@ -337,12 +364,14 @@ DubinsPath Dubins::calcLRL(Pose e) {
     u = mod2Pi(M_PI + 2 * theta);
     v = mod2Pi(M_PI_2 - t1 + theta + yaw);
 
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Dubins::calcLRL()::t1", t1);
     Recorder::getInstance()->saveData<double>("Dubins::calcLRL()::theta",
                                               theta);
     Recorder::getInstance()->saveData<double>("Dubins::calcLRL()::t", t);
     Recorder::getInstance()->saveData<double>("Dubins::calcLRL()::u", u);
     Recorder::getInstance()->saveData<double>("Dubins::calcLRL()::v", v);
+#endif
 
     first = make_pair(direction_t::left, t);
     second = make_pair(direction_t::right, u);
@@ -362,10 +391,14 @@ DubinsPath Dubins::calcRLR(Pose e) {
 
     e_prime[1] = -e[1];
     e_prime[2] = mod2Pi(-e[2]);
+
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Dubins::calcRLR()::e_prime[1]",
                                               e_prime[1]);
     Recorder::getInstance()->saveData<double>("Dubins::calcRLR()::e_prime[2]",
                                               e_prime[2]);
+#endif
+
     path = calcLRL(e_prime);
     if (path.empty()) {
         return path;

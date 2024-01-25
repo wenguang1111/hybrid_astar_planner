@@ -26,6 +26,13 @@ include_directories(
         ${CUSTOM_EIGEN}
 )
 
+option(USE_RECORDER "Use recorder" OFF)
+
+if (USE_RECORDER)
+  MESSAGE(STATUS "USE_RECORDER")
+  add_definitions(-DUSE_RECORDER)
+endif()
+
 add_library(HybridAStar
         SHARED LICENSE 
         include/utils.h

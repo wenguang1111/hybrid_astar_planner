@@ -25,11 +25,32 @@ Obstacle::Obstacle(Vector2f first_point, Vector2f second_point,
         first_point.x() -= length;
         second_point.x() += length;
     }
+
+#ifdef USE_RECORDER
+    Recorder::getInstance()->saveData<double>(
+        "Obstacle::Obstacle()::first_point.x()", first_point.x());
+    Recorder::getInstance()->saveData<double>(
+        "Obstacle::Obstacle()::first_point.y()", first_point.y());
+    Recorder::getInstance()->saveData<double>(
+        "Obstacle::Obstacle()::second_point.x()", second_point.x());
+    Recorder::getInstance()->saveData<double>(
+        "Obstacle::Obstacle()::second_point.y()", second_point.y());
+#endif
+
     first_point.x() -= obstacle_clearance;
     first_point.y() -= obstacle_clearance;
     second_point.x() += obstacle_clearance;
     second_point.y() += obstacle_clearance;
-
+#ifdef USE_RECORDER
+    Recorder::getInstance()->saveData<double>(
+        "Obstacle::Obstacle()::first_point.x()", first_point.x());
+    Recorder::getInstance()->saveData<double>(
+        "Obstacle::Obstacle()::first_point.y()", first_point.y());
+    Recorder::getInstance()->saveData<double>(
+        "Obstacle::Obstacle()::second_point.x()", second_point.x());
+    Recorder::getInstance()->saveData<double>(
+        "Obstacle::Obstacle()::second_point.y()", second_point.y());
+#endif
     bbox.first.x() = first_point.x();
     bbox.first.y() = first_point.y();
     bbox.second.x() = second_point.x();
@@ -80,6 +101,18 @@ bool Obstacle::isPointNearObstacle(Vector2f &p, double radius) {
         sqrt(pow(bbox.first.x() - p.x(), 2) + pow(bbox.second.y() - p.y(), 2));
     dist_to_ur =
         sqrt(pow(bbox.second.x() - p.x(), 2) + pow(bbox.second.y() - p.y(), 2));
+
+#ifdef USE_RECORDER
+    Recorder::getInstance()->saveData<double>(
+        "Obstacle::isPointNearObstacle.dist_to_ll", dist_to_ll);
+    Recorder::getInstance()->saveData<double>(
+        "Obstacle::isPointNearObstacle.dist_to_lr", dist_to_lr);
+    Recorder::getInstance()->saveData<double>(
+        "Obstacle::isPointNearObstacle.dist_to_ul", dist_to_ul);
+    Recorder::getInstance()->saveData<double>(
+        "Obstacle::isPointNearObstacle.dist_to_ur", dist_to_ur);
+#endif
+
     if (dist_to_ll <= radius || dist_to_lr <= radius || dist_to_ul <= radius ||
         dist_to_ur <= radius) {
         return true;

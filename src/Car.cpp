@@ -24,16 +24,18 @@ vector<Point> Car::getOutline() {
     x = pose[0];
     y = pose[1];
     yaw = pose[2];
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Car::getOutline()::x", x);
     Recorder::getInstance()->saveData<double>("Car::getOutline()::y", y);
     Recorder::getInstance()->saveData<double>("Car::getOutline()::yaw", yaw);
-
+#endif
     tail_x = x - cos(yaw) * length / 4.0;
     tail_y = y - sin(yaw) * length / 4.0;
     tail_l.push_back(tail_x + cos(yaw + M_PI_2) * width / 2.0);
     tail_l.push_back(tail_y + sin(yaw + M_PI_2) * width / 2.0);
     tail_r.push_back(tail_x + cos(yaw - M_PI_2) * width / 2.0);
     tail_r.push_back(tail_y + sin(yaw - M_PI_2) * width / 2.0);
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Car::getOutline()::tail_x",
                                               tail_x);
     Recorder::getInstance()->saveData<double>("Car::getOutline()::tail_y",
@@ -50,13 +52,14 @@ vector<Point> Car::getOutline() {
     Recorder::getInstance()->saveData<double>("Car::getOutline()::tail_r[i]",
                                               tail_y + sin(yaw - M_PI_2) *
                                                            width / 2.0);
-
+#endif
     head_x = x + cos(yaw) * length * 3.0 / 4.0;
     head_y = y + sin(yaw) * length * 3.0 / 4.0;
     head_l.push_back(head_x + cos(yaw + M_PI_2) * width / 2.0);
     head_l.push_back(head_y + sin(yaw + M_PI_2) * width / 2.0);
     head_r.push_back(head_x + cos(yaw - M_PI_2) * width / 2.0);
     head_r.push_back(head_y + sin(yaw - M_PI_2) * width / 2.0);
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Car::getOutline()::head_x",
                                               head_x);
     Recorder::getInstance()->saveData<double>("Car::getOutline()::head_y",
@@ -73,7 +76,7 @@ vector<Point> Car::getOutline() {
     Recorder::getInstance()->saveData<double>("Car::getOutline()::head_r[i]",
                                               head_y + sin(yaw - M_PI_2) *
                                                            width / 2.0);
-
+#endif
     vector<Point> outline;
     outline.push_back(tail_l);
     outline.push_back(tail_r);

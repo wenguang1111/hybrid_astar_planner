@@ -15,10 +15,12 @@ MapInfo::MapInfo(HybridAStarInitialConditions *hastar_ic_,
     setObstacles();
     vector<double> car_dimensions(
         {hastar_hp->car_length, hastar_hp->car_width});
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>(
         "MapInfo::MapInfo()::car_dimensions[]", hastar_hp->car_length);
     Recorder::getInstance()->saveData<double>(
         "MapInfo::MapInfo()::car_dimensions[]", hastar_hp->car_width);
+#endif
     Pose car_pose(start);
     car = Car(car_dimensions, car_pose);
 }
@@ -42,6 +44,7 @@ void MapInfo::setStateSpace() {
     origin.push_back(min(start[1], end[1]) - hastar_hp->lane_width); // y
     bounds.push_back(max(start[0], end[0]) - origin[0] + hastar_hp->lane_width);
     bounds.push_back(max(start[1], end[1]) - origin[1] + hastar_hp->lane_width);
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>(
         "MapInfo::setStateSpace()::origin[]",
         min(start[0], end[0]) - hastar_hp->lane_width);
@@ -54,6 +57,7 @@ void MapInfo::setStateSpace() {
     Recorder::getInstance()->saveData<double>(
         "MapInfo::setStateSpace()::bounds[]",
         max(start[1], end[1]) - origin[1] + hastar_hp->lane_width);
+#endif
 }
 
 void MapInfo::setObstacles() {
@@ -62,6 +66,7 @@ void MapInfo::setObstacles() {
     vector<double> lly(hastar_ic->o_lly, hastar_ic->o_lly + hastar_ic->no);
     vector<double> urx(hastar_ic->o_urx, hastar_ic->o_urx + hastar_ic->no);
     vector<double> ury(hastar_ic->o_ury, hastar_ic->o_ury + hastar_ic->no);
+#ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("MapInfo::setObstacles()::llx[]",
                                               *hastar_ic->o_llx);
     Recorder::getInstance()->saveData<double>(
@@ -84,6 +89,7 @@ void MapInfo::setObstacles() {
         "MapInfo::setObstacles()::ury[]",
         *hastar_ic->o_ury + static_cast<double>(static_cast<double>(
                                 static_cast<double>(hastar_ic->no))));
+#endif
 
     for (int i = 0; i < hastar_ic->no; i++) {
         addObstacle(Vector2f(llx[i], lly[i]), Vector2f(urx[i], ury[i]));
@@ -118,6 +124,8 @@ bool MapInfo::isCollision(vector<Point> car_outline) {
         p1.y() = car_outline[i][1];
         p2.x() = car_outline[(i + 1) % car_outline.size()][0];
         p2.y() = car_outline[(i + 1) % car_outline.size()][1];
+
+#ifdef USE_RECORDER
         Recorder::getInstance()->saveData<double>(
             "MapInfo::isCollision()::p1.x", p1.x());
         Recorder::getInstance()->saveData<double>(
@@ -126,6 +134,7 @@ bool MapInfo::isCollision(vector<Point> car_outline) {
             "MapInfo::isCollision()::p2.x", p2.x());
         Recorder::getInstance()->saveData<double>(
             "MapInfo::isCollision()::p2.y", p2.y());
+#endif
 
         if (isOutOfBounds(p1)) {
             return true; // p2 will be checked in loop

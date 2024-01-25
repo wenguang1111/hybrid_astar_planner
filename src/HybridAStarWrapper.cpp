@@ -15,8 +15,10 @@ void ApplyHybridAStar(HybridAStarInitialConditions *hastar_ic,
     HybridAStar hastar(map_info, hastar_hp);
     vector<Pose> path = hastar.runHybridAStar();
 
+#ifdef USE_RECORDER
     // write recorded data to csv file
     Recorder::getInstance()->writeDataToCSV();
+#endif
 
     // Reconstruct Hybrid AStar path
     int index = 0;
