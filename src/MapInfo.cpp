@@ -110,14 +110,14 @@ void MapInfo::addObstacle(Vector2f first_point, Vector2f second_point) {
 void MapInfo::setCarPose(Pose p) { car.setPose(p); }
 
 // Return the outline of the car as a vector of x, y points
-vector<Point> MapInfo::getCarOutline() { return car.getOutline(); }
+vector<uint_6_10> MapInfo::getCarOutline() { return car.getOutline(); }
 
 // Determine whether the car outline intersects an obstacle
 // Arguments:
 //      car_outline: x, y outline of the car
 // Returns:
 //      bool indicating whether the car outline intersects an obstacle
-bool MapInfo::isCollision(vector<Point> car_outline) {
+bool MapInfo::isCollision(vector<uint_6_10> car_outline) {
     Vector2f p1, p2;
     for (size_t i = 0; i < car_outline.size(); i++) {
         p1.x() = car_outline[i][0];

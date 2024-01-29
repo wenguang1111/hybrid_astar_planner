@@ -1,4 +1,6 @@
 #include "include/Car.h"
+#include "cnl/scaled_integer.h"
+#include "tool/fp_datatype.h"
 #include "tool/recorder.h"
 #include <cmath>
 
@@ -15,11 +17,12 @@ Car::Car(vector<double> dimensions, Pose pose_) : pose(pose_) {
 void Car::setPose(Pose p) { pose = p; }
 
 // Compute the outline of the car given its current pose
-vector<Point> Car::getOutline() {
-    double x, y, yaw;
-    double tail_x, tail_y, head_x, head_y;
-    vector<double> tail_l, tail_r;
-    vector<double> head_l, head_r;
+vector<uint_6_10> Car::getOutline() {
+    uint_6_10 x, y;
+    int_2_13 yaw;
+    uint_6_10 tail_x, tail_y, head_x, head_y;
+    vector<uint_6_10> tail_l, tail_r;
+    vector<uint_6_10> head_r, head_l;
 
     x = pose[0];
     y = pose[1];
@@ -77,7 +80,7 @@ vector<Point> Car::getOutline() {
                                               head_y + sin(yaw - M_PI_2) *
                                                            width / 2.0);
 #endif
-    vector<Point> outline;
+    vector<uint_6_10> outline;
     outline.push_back(tail_l);
     outline.push_back(tail_r);
     outline.push_back(head_r);

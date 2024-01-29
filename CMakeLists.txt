@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
 project(hybrid_astar_planner)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_FLAGS "-march=native -O3 -Wall")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
+set(CNL_DIR "${CNL_DIR} /home/wenguang/installed/cnl/include")
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Core REQUIRED)
@@ -25,6 +26,7 @@ include_directories(.)
 include_directories(
         ${CUSTOM_EIGEN}
 )
+include_directories(${CNL_DIR})
 
 option(USE_RECORDER "Use recorder" OFF)
 
@@ -42,6 +44,7 @@ add_library(HybridAStar
         include/MapInfo.h src/Car.cpp include/Car.h
         src/Obstacle.cpp include/Obstacle.h include/py_cpp_struct.h
         tool/recorder.h tool/recorder.cpp
+        tool/fp_datatype.h
         )
 
 # add_executable(main src/main.cpp)

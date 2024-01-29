@@ -3,22 +3,21 @@
 
 #include "utils.h"
 
-#include <vector>
 #include <tuple>
+#include <vector>
 
 using namespace std;
 class Car {
-public:
+  public:
     Car();
-    Car(vector<double> dimensions,
-        Pose pose_);
+    Car(vector<double> dimensions, Pose pose_);
     void setPose(Pose p);
-    vector<Point> getOutline();
-private:
+    vector<uint_6_10> getOutline();
+
+  private:
     double length;
     double width;
     Pose pose; // x, y, yaw
 };
 
-
-#endif //HYBRID_ASTAR_PLANNER_CAR_H
+#endif // HYBRID_ASTAR_PLANNER_CAR_H

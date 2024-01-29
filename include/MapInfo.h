@@ -2,8 +2,8 @@
 #define HYBRID_ASTAR_PLANNER_MAPINFO_H
 
 #include "Car.h"
-#include "py_cpp_struct.h"
 #include "Obstacle.h"
+#include "py_cpp_struct.h"
 #include "utils.h"
 
 #include <eigen3/Eigen/Dense>
@@ -13,20 +13,21 @@ using namespace std;
 using namespace Eigen;
 
 class MapInfo {
-public:
+  public:
     Pose start, end;
     HybridAStarInitialConditions *hastar_ic;
     HybridAStarHyperparameters *hastar_hp;
     MapInfo(HybridAStarInitialConditions *hastar_ic_,
-        HybridAStarHyperparameters *hastar_hp_);
+            HybridAStarHyperparameters *hastar_hp_);
     ~MapInfo();
     void setCarPose(Pose p);
     void setObstacles();
     void addObstacle(Vector2f first_point, Vector2f second_point);
-    vector<Point> getCarOutline();
-    bool isCollision(vector<Point> car_outline);
+    vector<uint_6_10> getCarOutline();
+    bool isCollision(vector<uint_6_10> car_outline);
     double getMapArea();
-private:
+
+  private:
     Car car;
     vector<Obstacle *> obstacles;
     vector<double> origin, bounds;
@@ -34,5 +35,4 @@ private:
     bool isOutOfBounds(Vector2f p);
 };
 
-
-#endif //HYBRID_ASTAR_PLANNER_MAPINFO_H
+#endif // HYBRID_ASTAR_PLANNER_MAPINFO_H
