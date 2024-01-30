@@ -88,7 +88,9 @@ vector<Pose> Dubins::generatePath(Pose s, DubinsPath path, double radius) {
                 "Dubins::generatePath()::r_yaw[i]", yaw);
 #endif
         } else {
-            center = calcTurnCenter(cur, p.first, radius);
+            center = calcTurnCenter(
+                cur, p.first,
+                radius); // TODO: need update to relex the double convertion
             ang_start = atan2(cur[1] - center[1], cur[0] - center[0]);
 
 #ifdef USE_RECORDER

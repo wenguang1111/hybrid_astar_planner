@@ -1,6 +1,6 @@
 /*
 How to compile this file:
-c++ -isystem /home/wenguang/installed/cnl/include -std=c++20 CNL_Test.cpp -o
+clang++ -isystem /home/wenguang/installed/cnl/include -std=c++20 CNL_Test.cpp -o
 CNL_Test
 */
 #include "cnl/all.h"
@@ -21,6 +21,5 @@ int main() {
     c.push_back(b);
     std::cout << c[0] << " represented by " << to_rep(c[0]) << std::endl;
 
-    auto x = cnl::sqrt(a);
-    std::cout << x;
+    std::cout << (double)a;
 }

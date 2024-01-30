@@ -10,8 +10,8 @@ for column in data.columns:
     max_value = data[column].max()
     min_value = data[column].min()
     std_dev = data[column].std()
-    
-    column_stats[column] = {'max_value': max_value, 'min_value': min_value, 'std_dev': std_dev}
+    num_cal = len(data[column])
+    column_stats[column] = {'max_value': max_value, 'min_value': min_value, 'std_dev': std_dev, 'num_cal': num_cal}
 
 
 for column, stats in column_stats.items():
@@ -19,6 +19,7 @@ for column, stats in column_stats.items():
     print("max_value:", stats['max_value'])
     print("min_value:", stats['min_value'])
     print("std_dev:", stats['std_dev'])
+    print("num_cal", stats['num_cal'])
     print("\n")
 
 # values = data['Car::getOutline()::head_l[i]']

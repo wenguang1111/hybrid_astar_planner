@@ -66,9 +66,9 @@ std_dev: 2.5097967476216843
 
 **Unsigned_6_10**
 
-variable： Car::getOutline()::yaw:
-max_value: 1.08333
-min_value: -1.78922
+variable： Car::getOutline()::**yaw**:
+**max_value: 1.08333
+min_value: -1.78922**
 std_dev: 0.5768003814763468
 
 **Signed_2_13**
@@ -79,28 +79,28 @@ min_value: 0.492567
 std_dev: 9.942828269576363
 
 variable： Dubins::calcEnd()::ey:
-max_value: 4.36376
-min_value: -4.36376
+**max_value: 4.36376
+min_value: -4.36376**
 std_dev: 2.716300948901463
 
 variable： Dubins::calcEnd()::lex:
-max_value: 6.66667
-min_value: 0.0861225
+**max_value: 6.66667
+min_value: 0.0861225**
 std_dev: 1.5465438981978994
 
 variable： Dubins::calcEnd()::ley:
-max_value: 4.69444
-min_value: -4.69444
+**max_value: 4.69444
+min_value: -4.69444**
 std_dev: 1.6960044772861238
 
 variable： Dubins::calcEnd()::leyaw:
-max_value: 0.857143
-min_value: -0.857143
+**max_value: 0.857143
+min_value: -0.857143**
 std_dev: 0.4048347068101039
 
 variable： Dubins::calcEnd()::yaw:
-max_value: 0.857143
-min_value: -0.857143
+**max_value: 0.857143
+min_value: -0.857143**
 std_dev: 0.4048347068101039
 
 variable： Dubins::calcLRL()::t:
@@ -109,8 +109,8 @@ min_value: 1.55909
 std_dev: 0.5363435186912461
 
 variable： Dubins::calcLRL()::t1:
-max_value: 0.836333
-min_value: -1.18896
+**max_value: 0.836333
+min_value: -1.18896**
 std_dev: 0.38684058637640745
 
 variable： Dubins::calcLRL()::theta:
@@ -373,7 +373,35 @@ max_value: 28.5
 min_value: 17.0
 std_dev: 6.35741037425355
 
-variable： Unnamed: 71:
+variable： Utils::calcTurnCenter()::ang:
+max_value: 7.67991
+min_value: -2.42794
+std_dev: 1.1822123306829064
+
+**int_4_11**
+
+variable： Utils::calcTurnCenter():❌
+max_value: 50.0
+min_value: 10.0
+std_dev: 10.545942024659643
+
+**uint_6_10**
+
+variable： Utils::calcTurnCenter()::y:
+max_value: 25.3449
+min_value: 4.65513
+std_dev: 6.1569864345844145
+
+**uint_6_10**
+
+variable： Utils::distance()::ans:
+max_value: 43.6937
+min_value: 0.0225527
+std_dev: 8.6754569336891
+
+**uint_6_10**
+
+variable： Unnamed: 75:
 max_value: nan
 min_value: nan
 std_dev: nan
