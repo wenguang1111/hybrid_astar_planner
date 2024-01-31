@@ -32,10 +32,18 @@ vector<DubinsPath> HybridAStar::getNeighbors(Pose &p) {
             rad -= hastar_hp->rad_step;
             continue;
         }
+        // DubinsPath dpl(
+        //     1, make_pair(direction_t::left, abs(hastar_hp->step_size /
+        //     rad)));
+        // DubinsPath dpr(
+        //     1, make_pair(direction_t::right, abs(hastar_hp->step_size /
+        //     rad)));
         DubinsPath dpl(
-            1, make_pair(direction_t::left, abs(hastar_hp->step_size / rad)));
+            1, make_pair(direction_t::left,
+                         Dubins::mod2Pi(abs(hastar_hp->step_size / rad))));
         DubinsPath dpr(
-            1, make_pair(direction_t::right, abs(hastar_hp->step_size / rad)));
+            1, make_pair(direction_t::right,
+                         Dubins::mod2Pi(abs(hastar_hp->step_size / rad))));
         paths.push_back(dpl);
         paths.push_back(dpr);
         rad -= hastar_hp->rad_step;
@@ -97,6 +105,9 @@ vector<Pose> HybridAStar::runHybridAStar() {
         // get the lowest total cost node and add it to close list
         pop_heap(openlist.begin(), openlist.end());
         HybridAStarPoint x = openlist.back();
+        if (x.pose[2] > 100) {
+            std::cout << "!i have some big value in openlist" << std::endl;
+        }
         openlist.pop_back();
         closelist.push_back(x);
         // construct Dubin's path to end
