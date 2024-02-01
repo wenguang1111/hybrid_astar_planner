@@ -32,12 +32,21 @@ vector<DubinsPath> HybridAStar::getNeighbors(Pose &p) {
             rad -= hastar_hp->rad_step;
             continue;
         }
+        //-----------original Code----------------------------------
+        //**This code create unnecessary calculation in Dubin::generatePath
+            // if (p.first == direction_t::left) {
+            //     ang_end = ang_start + p.second;
+            // } else {
+            //     ang_end = ang_start - p.second;
+            // } 
+            // the p.second get value upto 176, and this create unnec
         // DubinsPath dpl(
         //     1, make_pair(direction_t::left, abs(hastar_hp->step_size /
         //     rad)));
         // DubinsPath dpr(
         //     1, make_pair(direction_t::right, abs(hastar_hp->step_size /
         //     rad)));
+        //----------------------------------------------------------
         DubinsPath dpl(
             1, make_pair(direction_t::left,
                          Dubins::mod2Pi(abs(hastar_hp->step_size / rad))));
