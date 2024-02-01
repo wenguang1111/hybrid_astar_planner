@@ -1,6 +1,7 @@
 #ifndef HYBRID_ASTAR_PLANNER_DUBINS_H
 #define HYBRID_ASTAR_PLANNER_DUBINS_H
 
+#include "tool/fp_datatype.h"
 #include "utils.h"
 
 #include <utility>
@@ -8,7 +9,7 @@
 
 using namespace std;
 
-typedef pair<char, double> DubinsPoint;
+typedef pair<char, int_6_9> DubinsPoint;
 typedef vector<DubinsPoint> DubinsPath;
 
 class Dubins {
@@ -18,11 +19,11 @@ class Dubins {
     vector<DubinsPoint> getShortestPath();
     static vector<Pose> generatePath(Pose s, vector<DubinsPoint> path,
                                      double radius);
+    static int_3_12 mod2Pi(int_3_12 theta);
 
   private:
     Pose start, end;
-    double radius;
-    static double mod2Pi(double theta);
+    int_6_9 radius;
     Pose calcEnd();
     vector<DubinsPoint> calcLSL(Pose e);
     vector<DubinsPoint> calcRSR(Pose e);

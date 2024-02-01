@@ -10,13 +10,13 @@ using namespace std;
 class Car {
   public:
     Car();
-    Car(vector<double> dimensions, Pose pose_);
+    Car(vector<uint_3_13> dimensions, Pose pose_);
     void setPose(Pose p);
-    vector<uint_6_10> getOutline();
+    vector<Point> getOutline();
 
   private:
-    double length;
-    double width;
+    uint_3_13 length;
+    uint_3_13 width;
     Pose pose; // x, y, yaw
 };
 

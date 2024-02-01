@@ -13,7 +13,7 @@ MapInfo::MapInfo(HybridAStarInitialConditions *hastar_ic_,
     hastar_hp = hastar_hp_;
     setStateSpace();
     setObstacles();
-    vector<double> car_dimensions(
+    vector<uint_3_13> car_dimensions(
         {hastar_hp->car_length, hastar_hp->car_width});
 #ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>(
@@ -110,20 +110,22 @@ void MapInfo::addObstacle(Vector2f first_point, Vector2f second_point) {
 void MapInfo::setCarPose(Pose p) { car.setPose(p); }
 
 // Return the outline of the car as a vector of x, y points
-vector<uint_6_10> MapInfo::getCarOutline() { return car.getOutline(); }
+vector<Point> MapInfo::getCarOutline() { return car.getOutline(); }
 
 // Determine whether the car outline intersects an obstacle
 // Arguments:
 //      car_outline: x, y outline of the car
 // Returns:
 //      bool indicating whether the car outline intersects an obstacle
-bool MapInfo::isCollision(vector<uint_6_10> car_outline) {
+bool MapInfo::isCollision(vector<Point> car_outline) {
     Vector2f p1, p2;
     for (size_t i = 0; i < car_outline.size(); i++) {
-        p1.x() = car_outline[i][0];
-        p1.y() = car_outline[i][1];
-        p2.x() = car_outline[(i + 1) % car_outline.size()][0];
-        p2.y() = car_outline[(i + 1) % car_outline.size()][1];
+        p1.x() = static_cast<double>(car_outline[i][0]);
+        p1.y() = static_cast<double>(car_outline[i][1]);
+        p2.x() =
+            static_cast<double>(car_outline[(i + 1) % car_outline.size()][0]);
+        p2.y() =
+            static_cast<double>(car_outline[(i + 1) % car_outline.size()][1]);
 
 #ifdef USE_RECORDER
         Recorder::getInstance()->saveData<double>(

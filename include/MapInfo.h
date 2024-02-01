@@ -23,8 +23,8 @@ class MapInfo {
     void setCarPose(Pose p);
     void setObstacles();
     void addObstacle(Vector2f first_point, Vector2f second_point);
-    vector<uint_6_10> getCarOutline();
-    bool isCollision(vector<uint_6_10> car_outline);
+    vector<Point> getCarOutline();
+    bool isCollision(vector<Point> car_outline);
     double getMapArea();
 
   private:

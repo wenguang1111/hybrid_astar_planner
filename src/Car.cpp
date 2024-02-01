@@ -8,7 +8,7 @@ using namespace std;
 
 Car::Car() {}
 
-Car::Car(vector<double> dimensions, Pose pose_) : pose(pose_) {
+Car::Car(vector<uint_3_13> dimensions, Pose pose_) : pose(pose_) {
     length = dimensions[0];
     width = dimensions[1];
 }
@@ -17,12 +17,12 @@ Car::Car(vector<double> dimensions, Pose pose_) : pose(pose_) {
 void Car::setPose(Pose p) { pose = p; }
 
 // Compute the outline of the car given its current pose
-vector<uint_6_10> Car::getOutline() {
-    uint_6_10 x, y;
+vector<Point> Car::getOutline() {
+    int_6_9 x, y;
     int_2_13 yaw;
-    uint_6_10 tail_x, tail_y, head_x, head_y;
-    vector<uint_6_10> tail_l, tail_r;
-    vector<uint_6_10> head_r, head_l;
+    int_6_9 tail_x, tail_y, head_x, head_y;
+    vector<int_6_9> tail_l, tail_r;
+    vector<int_6_9> head_r, head_l;
 
     x = pose[0];
     y = pose[1];
@@ -80,7 +80,7 @@ vector<uint_6_10> Car::getOutline() {
                                               head_y + sin(yaw - M_PI_2) *
                                                            width / 2.0);
 #endif
-    vector<uint_6_10> outline;
+    vector<Point> outline;
     outline.push_back(tail_l);
     outline.push_back(tail_r);
     outline.push_back(head_r);

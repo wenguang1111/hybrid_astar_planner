@@ -8,8 +8,10 @@
 
 using namespace std;
 
-typedef vector<uint_6_10> Point; //* range analysis for position
-typedef vector<double> Pose;     //* x,y,yaw; range analysis for x, y
+typedef vector<int_6_9> Point; //* exsist x and y
+
+typedef vector<int_6_9> Pose; //* x,y,yaw; range analysis for x, y
+typedef vector<double> Pose_ret;
 
 enum direction_t { left = 'l', straight = 's', right = 'r' };
 
@@ -56,7 +58,9 @@ inline uint_6_10 distance(Pose p1, Pose p2) {
         sqrt(pow(p2[0] - p1[0], 2) + pow(p2[1] - p1[1], 2)));
 #endif
 
-    return sqrt(pow(p2[0] - p1[0], 2) + pow(p2[1] - p1[1], 2));
+    // return sqrt(pow(p2[0] - p1[0], 2) + pow(p2[1] - p1[1], 2));
+    return sqrt((p2[0] - p1[0]) * (p2[0] - p1[0]) +
+                (p2[1] - p1[1]) * (p2[1] - p1[1]));
 }
 
 #endif // HYBRID_ASTAR_PLANNER_UTILS_H

@@ -13,7 +13,7 @@ void ApplyHybridAStar(HybridAStarInitialConditions *hastar_ic,
                       HybridAStarReturnValues *hastar_rv) {
     MapInfo *map_info = new MapInfo(hastar_ic, hastar_hp);
     HybridAStar hastar(map_info, hastar_hp);
-    vector<Pose> path = hastar.runHybridAStar();
+    vector<Pose_ret> path = hastar.runHybridAStar();
 
 #ifdef USE_RECORDER
     // write recorded data to csv file

@@ -1,4 +1,5 @@
 #include "include/Dubins.h"
+#include "tool/fp_datatype.h"
 #include "tool/recorder.h"
 #include <cmath>
 
@@ -6,11 +7,12 @@
 DubinsPath Dubins::getShortestPath() {
     vector<DubinsPath> paths;
     DubinsPath shortest_path;
-    double cost, shortest_cost;
-    shortest_cost = INFINITY;
+    uint_10_6 cost, shortest_cost;
+    shortest_cost = std::numeric_limits<uint_10_6>::max();
 
     paths = calcPaths();
     for (const auto &path : paths) {
+        cost = 0;
         cost = 0;
         for (auto p : path) {
             if (p.first == direction_t::straight) {
@@ -41,8 +43,12 @@ DubinsPath Dubins::getShortestPath() {
 // Returns:
 //      vector of pose x, y, yaw
 vector<Pose> Dubins::generatePath(Pose s, DubinsPath path, double radius) {
-    vector<double> r_x, r_y, r_yaw, cur, center;
-    double yaw, ang, ang_start, ang_end, step;
+    vector<int_6_9> r_x, r_y;
+    vector<int_4_11> r_yaw;
+    Pose cur;
+    Point center;
+    int_3_12 yaw, ang, ang_start, ang_end;
+    int_2_13 step;
     int tick;
     vector<Pose> ret;
 
@@ -88,10 +94,9 @@ vector<Pose> Dubins::generatePath(Pose s, DubinsPath path, double radius) {
                 "Dubins::generatePath()::r_yaw[i]", yaw);
 #endif
         } else {
-            center = calcTurnCenter(
-                cur, p.first,
-                radius); // TODO: need update to relex the double convertion
-            ang_start = atan2(cur[1] - center[1], cur[0] - center[0]);
+            center = calcTurnCenter(cur, p.first, radius);
+            ang_start = atan2(static_cast<double>(cur[1] - center[1]),
+                              static_cast<double>(cur[0] - center[0]));
 
 #ifdef USE_RECORDER
             Recorder::getInstance()->saveData<double>(
@@ -185,14 +190,15 @@ vector<Pose> Dubins::generatePath(Pose s, DubinsPath path, double radius) {
 }
 
 // Mod theta (radians) to range [0, 2 PI)
-double Dubins::mod2Pi(double theta) {
+int_3_12 Dubins::mod2Pi(int_3_12 theta) {
     return theta - 2.0 * M_PI * floor(theta / 2.0 / M_PI);
 }
 
 // Calculate the delta in x, y, yaw between the start and end
 Pose Dubins::calcEnd() {
-    double ex, ey, yaw, lex, ley, leyaw;
-    vector<double> dend;
+    int_6_9 ex, ey, lex, ley;
+    int_3_12 yaw, leyaw;
+    Pose dend;
 
     ex = end[0] - start[0];
     ey = end[1] - start[1];
@@ -220,14 +226,16 @@ Pose Dubins::calcEnd() {
 
 // Compute Dubin's path for L(eft), S(traight), L(eft) sequence
 DubinsPath Dubins::calcLSL(Pose e) {
-    double x, y, yaw, u, t, v;
+    int_6_9 x, y, u;
+    int_3_12 yaw, t, v;
     DubinsPath dp;
 
     yaw = e[2];
     x = e[0] - sin(yaw);
     y = e[1] - 1 + cos(yaw);
-    u = sqrt(pow(x, 2) + pow(y, 2));
-    t = mod2Pi(atan2(y, x));
+    // u = sqrt(pow(x, 2) + pow(y, 2));
+    u = sqrt(x * x + y * y);
+    t = mod2Pi(atan2(static_cast<double>(y), static_cast<double>(x)));
     v = mod2Pi(yaw - t);
 
     DubinsPoint first(direction_t::left, t);
@@ -272,14 +280,15 @@ DubinsPath Dubins::calcRSR(Pose e) {
 
 // Compute Dubin's path for L(eft), S(traight), R(ight) sequence
 DubinsPath Dubins::calcLSR(Pose e) {
-    double x, y, yaw, u1_square, t1, u, theta, t, v;
+    int_6_9 x, y, u1_square, u;
+    int_3_12 yaw, t, v, theta, t1;
     DubinsPoint first, second, third;
     DubinsPath dp;
 
     yaw = e[2];
     x = e[0] + sin(yaw);
     y = e[1] - 1 - cos(yaw);
-    u1_square = pow(x, 2) + pow(y, 2);
+    u1_square = x * x + y * y; // TODO:
 
 #ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::yaw", yaw);
@@ -290,9 +299,9 @@ DubinsPath Dubins::calcLSR(Pose e) {
     if (u1_square <= 4.0) {
         return dp;
     }
-    t1 = mod2Pi(atan2(y, x));
-    u = sqrt(u1_square - 4);
-    theta = mod2Pi(atan(2 / u));
+    t1 = mod2Pi(atan2(static_cast<double>(y), static_cast<double>(x)));
+    u = sqrt(static_cast<double>(u1_square - 4));
+    theta = mod2Pi(atan(2 / static_cast<double>(u)));
     t = mod2Pi(t1 + theta);
     v = mod2Pi(t - yaw);
     first = make_pair(direction_t::left, t);
@@ -341,14 +350,15 @@ DubinsPath Dubins::calcRSL(Pose e) {
 
 // Compute Dubin's path for L(eft), R(ight), L(eft) sequence
 DubinsPath Dubins::calcLRL(Pose e) {
-    double x, y, yaw, u1, t1, theta, t, u, v;
+    int_6_9 x, y, u1;
+    int_3_12 yaw, t1, theta, t, v, u;
     DubinsPoint first, second, third;
     DubinsPath dp;
 
     yaw = e[2];
     x = e[0] - sin(yaw);
     y = e[1] - 1 + cos(yaw);
-    u1 = sqrt(pow(x, 2) + pow(y, 2));
+    u1 = sqrt(x * x + y * y);
 
 #ifdef USE_RECORDER
     Recorder::getInstance()->saveData<double>("Dubins::calcLRL()::yaw", yaw);
@@ -360,8 +370,8 @@ DubinsPath Dubins::calcLRL(Pose e) {
     if (u1 > 4.0) {
         return dp;
     }
-    t1 = atan2(y, x);
-    theta = acos(u1 / 4.0);
+    t1 = atan2(static_cast<double>(y), static_cast<double>(x));
+    theta = acos(static_cast<double>(u1) / 4.0);
     t = mod2Pi(M_PI_2 + t1 + theta);
     u = mod2Pi(M_PI + 2 * theta);
     v = mod2Pi(M_PI_2 - t1 + theta + yaw);

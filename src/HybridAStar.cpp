@@ -8,7 +8,7 @@ HybridAStar::HybridAStar(MapInfo *map_info_,
     : map_info(map_info_) {
     hastar_hp = hastar_hp_;
     HybridAStarPoint p;
-    double d = hCost(map_info->start);
+    uint_6_10 d = hCost(map_info->start);
     p.pose.assign(map_info->start.begin(), map_info->start.end());
     p.g = 0.0;
     p.h = d;
@@ -33,9 +33,11 @@ vector<DubinsPath> HybridAStar::getNeighbors(Pose &p) {
             continue;
         }
         DubinsPath dpl(
-            1, make_pair(direction_t::left, abs(hastar_hp->step_size / rad)));
+            1, make_pair(direction_t::left,
+                         Dubins::mod2Pi(abs(hastar_hp->step_size / rad))));
         DubinsPath dpr(
-            1, make_pair(direction_t::right, abs(hastar_hp->step_size / rad)));
+            1, make_pair(direction_t::right,
+                         Dubins::mod2Pi(abs(hastar_hp->step_size / rad))));
         paths.push_back(dpl);
         paths.push_back(dpr);
         rad -= hastar_hp->rad_step;
@@ -53,14 +55,18 @@ vector<DubinsPath> HybridAStar::getNeighbors(Pose &p) {
 //      p: ending pose
 // Returns:
 //      reconstructed path vector containing pose x, y, yaw
-vector<Pose> HybridAStar::reconstructPath(Pose &p) {
-    vector<Pose> path;
+vector<Pose_ret> HybridAStar::reconstructPath(Pose &p) {
+    vector<Pose_ret> path;
     while (p != map_info->start) {
         auto it = find_if(closelist.begin(), closelist.end(),
                           [&](HybridAStarPoint &pt) { return (p == pt.pose); });
         for (auto wp_it = it->path.rbegin(); wp_it != it->path.rend();
              wp_it++) {
-            path.push_back(*wp_it);
+            Pose_ret pose;
+            for (auto val : *wp_it) {
+                pose.push_back(static_cast<double>(val));
+            }
+            path.push_back(pose);
         }
         p = it->camefrom;
     }
@@ -69,8 +75,8 @@ vector<Pose> HybridAStar::reconstructPath(Pose &p) {
 }
 
 // Calculate the heuristic cost to the end goal
-double HybridAStar::hCost(Pose &p) {
-    double d = distance(p, map_info->end);
+uint_6_10 HybridAStar::hCost(Pose &p) {
+    uint_6_10 d = distance(p, map_info->end);
     return d;
 }
 
@@ -88,8 +94,8 @@ bool HybridAStar::isCollision(vector<Pose> path) {
 }
 
 // Run Hybrid A Star algorithm
-vector<Pose> HybridAStar::runHybridAStar() {
-    double closest_distance = INFINITY;
+vector<Pose_ret> HybridAStar::runHybridAStar() {
+    uint_6_10 closest_distance = std::numeric_limits<uint_6_10>::max();
     Pose best_pose = map_info->start;
     int count = 0;
     while (!openlist.empty() && count < hastar_hp->max_iterations) {
@@ -138,7 +144,7 @@ vector<Pose> HybridAStar::runHybridAStar() {
             }
 
             // update current heuristic cost
-            double tentative_g_score = x.g;
+            auto tentative_g_score = x.g;
             if (neighbor[0].first == direction_t::straight)
                 tentative_g_score += abs(neighbor[0].second);
             else
@@ -150,7 +156,7 @@ vector<Pose> HybridAStar::runHybridAStar() {
                 openlist.begin(), openlist.end(),
                 [&](HybridAStarPoint &p) { return (p.pose == y); });
             if (it_y == openlist.end()) {
-                double d = hCost(y);
+                uint_6_10 d = hCost(y);
                 HybridAStarPoint y_;
                 y_.pose.assign(y.begin(), y.end());
                 y_.g = tentative_g_score;
