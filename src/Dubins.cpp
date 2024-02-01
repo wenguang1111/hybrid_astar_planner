@@ -294,6 +294,8 @@ DubinsPath Dubins::calcLSR(Pose e) {
     Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::yaw", yaw);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::x", x);
     Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::y", y);
+    Recorder::getInstance()->saveData<double>("Dubins::calcLSR()::u1_square",
+                                              u1_square);
 #endif
 
     if (u1_square <= 4.0) {
