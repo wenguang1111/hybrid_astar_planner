@@ -159,15 +159,11 @@ vector<Pose_ret> HybridAStar::runHybridAStar() {
             }
 
             // update current heuristic cost
-<<<<<<< HEAD
             auto tentative_g_score = x.g;
-=======
-            double tentative_g_score = x.g;
 #ifdef USE_RECORDER
             Recorder::getInstance()->saveData<double>(
                 "HybridAStar::runHybridAStar()::x.g", tentative_g_score);
 #endif
->>>>>>> origin/develop
             if (neighbor[0].first == direction_t::straight)
                 tentative_g_score += abs(neighbor[0].second);
             else
