@@ -34,12 +34,12 @@ vector<DubinsPath> HybridAStar::getNeighbors(Pose &p) {
         }
         //-----------original Code----------------------------------
         //**This code create unnecessary calculation in Dubin::generatePath
-            // if (p.first == direction_t::left) {
-            //     ang_end = ang_start + p.second;
-            // } else {
-            //     ang_end = ang_start - p.second;
-            // } 
-            // the p.second get value upto 176, and this create unnec
+        // if (p.first == direction_t::left) {
+        //     ang_end = ang_start + p.second;
+        // } else {
+        //     ang_end = ang_start - p.second;
+        // }
+        // the p.second get value upto 176, and this create unnec
         // DubinsPath dpl(
         //     1, make_pair(direction_t::left, abs(hastar_hp->step_size /
         //     rad)));
@@ -88,6 +88,7 @@ vector<Pose> HybridAStar::reconstructPath(Pose &p) {
 // Calculate the heuristic cost to the end goal
 double HybridAStar::hCost(Pose &p) {
     double d = distance(p, map_info->end);
+
     return d;
 }
 
@@ -114,9 +115,6 @@ vector<Pose> HybridAStar::runHybridAStar() {
         // get the lowest total cost node and add it to close list
         pop_heap(openlist.begin(), openlist.end());
         HybridAStarPoint x = openlist.back();
-        if (x.pose[2] > 100) {
-            std::cout << "!i have some big value in openlist" << std::endl;
-        }
         openlist.pop_back();
         closelist.push_back(x);
         // construct Dubin's path to end
@@ -159,12 +157,19 @@ vector<Pose> HybridAStar::runHybridAStar() {
 
             // update current heuristic cost
             double tentative_g_score = x.g;
+#ifdef USE_RECORDER
+            Recorder::getInstance()->saveData<double>(
+                "HybridAStar::runHybridAStar()::x.g", tentative_g_score);
+#endif
             if (neighbor[0].first == direction_t::straight)
                 tentative_g_score += abs(neighbor[0].second);
             else
                 tentative_g_score +=
                     abs(neighbor[0].second * hastar_hp->radius);
-
+#ifdef USE_RECORDER
+            Recorder::getInstance()->saveData<double>(
+                "HybridAStar::runHybridAStar()::x.g", tentative_g_score);
+#endif
             // keep the neighbor if it is unexplored
             auto it_y = std::find_if(
                 openlist.begin(), openlist.end(),
@@ -175,7 +180,15 @@ vector<Pose> HybridAStar::runHybridAStar() {
                 y_.pose.assign(y.begin(), y.end());
                 y_.g = tentative_g_score;
                 y_.h = d;
+#ifdef USE_RECORDER
+                Recorder::getInstance()->saveData<double>(
+                    "HybridAStar::runHybridAStar()::y_.h", y_.h);
+#endif
                 y_.f = y_.g + y_.h;
+#ifdef USE_RECORDER
+                Recorder::getInstance()->saveData<double>(
+                    "HybridAStar::runHybridAStar()::y_.f", y_.f);
+#endif
                 y_.path.assign(neighbor_path.begin(), neighbor_path.end());
                 y_.camefrom.assign(x.pose.begin(), x.pose.end());
                 openlist.push_back(y_);
